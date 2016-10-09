@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<title></title>
+	</head>
+	<body>
+		<form action="/test" method="get">
+			<input type="text" name="username" placeholder="Username" value="{{ username }}" />
+		</form>
+		<ul>
+			{% for image in images %}
+				<li><img width="200px" src="{{ image.image }}" />{{ image.likes }} likes</li>
+			{% endfor %}
+		</ul>
+	</body>
+</html>
