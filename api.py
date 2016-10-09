@@ -39,10 +39,29 @@ def getData(username):
 	response = response.json()["user"]
 	return response
 
-def getFollowers(username, ):
-	link = "https://www.instagram.com/query/"
-	payload = {}
-	response = requests.post(link, data=payload)
+def getFollowers(username, followcount):
+    data = getData(username)
+    id = str(getId(username))
+    link = "https://www.instagram.com/query/"
+    cookie = 'cookie: mid=V-wD1QAEAAEW44x_1M8EDNiHRXMh; fbm_124024574287414=base_domain=.instagram.com; sessionid=IGSC37ca9919ba5877bf7a73726f1ce984a982bf9814dc91ecbcfe072743774f4b03%3AnxWkpGQMWsIY6Pr0H8LJEEHfRR94kxuC%3A%7B%22_token_ver%22%3A2%2C%22_auth_user_id%22%3A1819659594%2C%22_token%22%3A%221819659594%3AzHLJ7vJH0zDI9tLznaiAT57uHcQ4WUEa%3Adac02cae7220ca392d6063d1c9a9c41f37ab73bcaac97139887b177f638fce49%22%2C%22asns%22%3A%7B%22time%22%3A1475990034%2C%22192.76.177.124%22%3A12%7D%2C%22_auth_user_backend%22%3A%22accounts.backends.CaseInsensitiveModelBackend%22%2C%22last_refreshed%22%3A1475999150.203311%2C%22_platform%22%3A4%2C%22_auth_user_hash%22%3A%22%22%7D; ig_pr=2; ig_vw=1818; s_network=; fbsr_124024574287414=O6xNwnfFavbRiB9KlBVQ0TszsrfggcQ7KaA2_ujWX_g.eyJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImNvZGUiOiJBUURjWUpXdVQ1UGZTUnRUeng4Rjh0eU9JWjVheVZkdW5rSnd4bVd4MXl3aklMVG5yUkl5VEYyTDdSQTFxMEFjUFlaNEtZbzBoS2dvbXhIbFViaGRBTWctQnI1ZVlVRmVuNVBlQWI3VjdHMlk2MmhZbVhBTnFUdWZFbHZrcHp4eDFKbmg3d1NzTlpva0Uwb1liOUotZ0w3ZkZWWjZIQnd6VmdFNU9OMFdhWTh0ajFPdlRlc29IVENwaTFVbk40YUlDNVp5ajROZlZXZWpLMUFPTU9WZU1xS1FQNUc1LTIzSlF3UVhDOGVIeVNyTjZTOEVpdjhWVnFYR20zVU15N1Qxb3VoRmYyNHBUcXd2WWxGWENiVEptb3AxSTBpc0tCM0EzVHotLU1FZkpBWXNiQ2V3czctYTJGRTJSc0d6MGRBX1ZFc3NjcEpwdjJ5WWpXZ0VoeTQ0bVFwRyIsImlzc3VlZF9hdCI6MTQ3NTk5OTIxMiwidXNlcl9pZCI6IjE3MDA4NTA5OTUifQ; csrftoken=RFWzDB2Sr4B9yt6YTfwlhitEJl9bQum8; ds_user_id=' + id
+    payload = {}
+    headers = {
+            "Host": "www.instagram.com",
+            "Accept": "*/*",
+            "Accept-Language": "en-US,en;q=0.5",
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": "https://www.instagram.com/" + username + "/" ,
+            "X-Instagram-AJAX": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0",
+            "Cookie": cookie,
+            "origin": "https://www.instagram.com",
+            "x-csrftoken": "RFWzDB2Sr4B9yt6YTfwlhitEJl9bQum8",
+            "x-instagram-ajax": "1",
+            "authority": "www.instagram.com"
+        }
+    query = 'q=ig_user('+id+')+%7B%0A++followed_by.first('+str(followcount)+')+%7B%0A++++count%2C%0A++++page_info+%7B%0A++++++end_cursor%2C%0A++++++has_next_page%0A++++%7D%2C%0A++++nodes+%7B%0A++++++id%2C%0A++++++is_verified%2C%0A++++++followed_by_viewer%2C%0A++++++requested_by_viewer%2C%0A++++++full_name%2C%0A++++++profile_pic_url%2C%0A++++++username%0A++++%7D%0A++%7D%0A%7D%0A&ref=relationships%3A%3Afollow_list&query_id=17851938028087704'
+    response = requests.post(link, data=payload)
+    return response
 
 def getPicturesRecursive(username, id, has_next, end, pictures):
 	if has_next:
