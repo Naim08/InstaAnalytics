@@ -16,31 +16,34 @@ db = client.instagram
 users = [
 	"naimmiah08",
     "ohmytousif",
-	"syedfordeys", 
-	"zabibee",  
-	"birdpanda",  
-	"clitoristal",  
-	"sub.a",  
-	"tif.lon",  
-	"bethybogart",  
-	"mfazalul",  
-	"syedmuhtasim",  
-	"micaluvv",  
-	"saxtothemax",  
-	"beenoohh",  
-	"sneaky_potato",  
-	"moesaucesome",  
-	"isha.mehra",  
-	"kris_mc_",  
-	"fatalraven", 
-	"themacintosh1", 
-	"mulla.man",  
-	"lilmissshine124",  
-	"the_manamina",  
+	"childofparis",
+	"mushref_hussain",
+	"childofdhaka",
+	# "syedfordeys", 
+	# "zabibee",  
+	# "birdpanda",  
+	# "clitoristal",  
+	# "sub.a",  
+	# "tif.lon",  
+	# "bethybogart",  
+	# "mfazalul",  
+	# "syedmuhtasim",  
+	# "micaluvv",  
+	# "saxtothemax",  
+	# "beenoohh",  
+	# "sneaky_potato",  
+	# "moesaucesome",  
+	# "isha.mehra",  
+	# "kris_mc_",  
+	# "fatalraven", 
+	# "themacintosh1", 
+	# "mulla.man",  
+	# "lilmissshine124",  
+	# "the_manamina",  
 	# "emptyconvos",  
 	# "throwrw male",  
-	# "a.rah_man",  
-	# "hassaniboii",   
+	"a.rah_man",  
+	"hassaniboii",   
 	# "ahad_sheriff",   
 	# "ammaarica",   
 	# "humii9",  
@@ -61,32 +64,33 @@ max_clarifai_limit = 128
 
 # predict with the model
 for user in users:
-    data = api.getData(user)
-    media = api.getPictures(user)
-    # media = data["media"]["nodes"]
-    image_links = []
-    results = []
-    for mediaItem in media:
-        image_links.append(mediaItem["display_src"])
-        imageinfo = model.predict_by_url(mediaItem["display_src"])
-        classes = []
-        probs = []
-        for i in imageinfo['outputs'][0]['data']['concepts']:
-            classes.append(i['name'])
-            probs.append(i['value'])
-        results.append({'result': {'tag': {'classes': classes, 'probs': probs}}})
-        classes = []
-        probs = []
-#    print results
-#    if len(image_links) > max_clarifai_limit:
-#        times = image_links % max_clarifai_limit
-#    else:
-#        results = clarifai_api.tag_image_urls(image_links)["results"]
-#        print(results)
-    for result in results:
-        result = result["result"]["tag"]
-        tag_pool.extend(result["classes"])
-    users_omega[user] = results
+	print "Doing user " + user
+	data = api.getData(user)
+	media = api.getPictures(user)
+	# media = data["media"]["nodes"]
+	image_links = []
+	results = []
+	for mediaItem in media:
+		image_links.append(mediaItem["display_src"])
+		imageinfo = model.predict_by_url(mediaItem["display_src"])
+		classes = []
+		probs = []
+		for i in imageinfo['outputs'][0]['data']['concepts']:
+			classes.append(i['name'])
+			probs.append(i['value'])
+		results.append({'result': {'tag': {'classes': classes, 'probs': probs}}})
+		classes = []
+		probs = []
+	#    print results
+	#    if len(image_links) > max_clarifai_limit:
+	#        times = image_links % max_clarifai_limit
+	#    else:
+	#        results = clarifai_api.tag_image_urls(image_links)["results"]
+	#        print(results)
+	for result in results:
+		result = result["result"]["tag"]
+		tag_pool.extend(result["classes"])
+	users_omega[user] = results
 tag_pool = set(tag_pool)
 
 db.tags_pool.update({'id': 1}, { '$set' : {'tags': list(tag_pool)}})

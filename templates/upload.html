@@ -236,20 +236,23 @@
                   
                          <form id="upload" class="text-center" method="post" action="upload" enctype="multipart/form-data" novalidate>
                            <h1>Type Instagram Username</h1>
-                           
-                           <div class="form-group">
+                           <div class="row">
+                           <div class="col-md-4">
+                               </div>
+                           <div class="form-group col-md-4">
                             <input type="text" placeholder="Instagram Username" class="form-control" name="username" id="username">
                         </div>
-                            
+                           </div>
+                            <h1>Image Upload</h1>
                             <div id="drop">
-                                
-<h1>Image Upload</h1>
+                                 <p id="uploadfilename"></p>
                                 <a class="ladda-button ladda-button-demo btn btn-primary btn-lg" role="button" data-style="zoom-in"><span class="ladda-label">Browse</span><span class="ladda-spinner"></span></a>
                                 
                             <center style="padding: 10 0">
                             </center>
                            
                             <input id="id_docfile" name="file" type="file" required>
+                           
                              <p><input id="uploadfile" type="submit" value="value"/></p>
                             </div>
 

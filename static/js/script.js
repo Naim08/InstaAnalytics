@@ -14,7 +14,7 @@ $(function(){
           $('input[type="file"]').change(function(e){
               $(this).parent().prepend(tpl); 
             var fileName = e.target.files[0].name;
-            $('.uploadfile').append('<p>'+fileName +'</p'); 
+            $('#uploadfilename').html(fileName); 
         });
         $(this).text()
         $(this).html("Submit");

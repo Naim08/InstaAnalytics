@@ -25,6 +25,8 @@ with open('savedDataSet','rb') as f:
 follows_median = dataset[2]
 followers_median = dataset[3]
 
+# print len(dataset[0])
+
 linearClassifier = LinearRegression()
 linearClassifier.fit(dataset[0], dataset[1])
 # This is the path to the upload directory
