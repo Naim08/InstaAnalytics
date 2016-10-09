@@ -113,4 +113,7 @@ def getFirst10(username):
 		output["images"] = images
 		return output
 
-# print getData("naimmiah08")
+# data = getData("naimmiah08")
+# follows = data["follows"]["count"]
+# followers = data["followed_by"]["count"]
+# print follows, followers

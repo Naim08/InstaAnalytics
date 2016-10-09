@@ -5,7 +5,10 @@ from werkzeug import secure_filename
 from clarifai import rest
 from clarifai.rest import ClarifaiApp
 from clarifai.rest import Image as ClImage
+from sklearn.linear_model import LinearRegression
 import api
+import pickle
+from math import ceil
 from pymongo import MongoClient
 appApi = ClarifaiApp("v8Czk2boQhiop51nZ0R4R4L4Wpohwb9ZyvUGKdvC", "Hh6kZKeYLdOwu0LsgT6eML_pzVxX_gasdvkT07cD")
 model = appApi.models.get("general-v1.3")
@@ -14,6 +17,16 @@ client = MongoClient()
 db = client.instagram
 
 
+dataset = []
+
+with open('savedDataSet','rb') as f:
+	dataset = pickle.load(f)
+
+follows_median = dataset[2]
+followers_median = dataset[3]
+
+linearClassifier = LinearRegression()
+linearClassifier.fit(dataset[0], dataset[1])
 # This is the path to the upload directory
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 # These are the extension that we are accepting to be uploaded
@@ -26,7 +39,7 @@ def allowed_file(filename):
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+	return "Hello World!"
 
 @app.route("/test")
 def rerouteTest():
@@ -61,78 +74,93 @@ def index():
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
-    # Get the name of the uploaded file
-    file = request.files['file']
-    # Check if the file is one of the allowed types/extensions
-    if file and allowed_file(file.filename):
-        # Make the filename safe, remove unsupported chars
-        filename = secure_filename(file.filename)
-        # Move the file form the temporal folder to
-        # the upload folder we setup
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        # Redirect the user to the uploaded_file route, which
-        # will basicaly show on the browser the uploaded file
-        image = ClImage(file_obj=open('uploads/' + filename, 'rb'))
-        results = []
-        classes = []
-        probs = []
-        users_omega = {}
-        images = []
-        likes = []
-        following = []
-        followers = []
-        imageinfo = model.predict([image])
-        for i in imageinfo['outputs'][0]['data']['concepts']:
-            classes.append(i['name'])
-            probs.append(i['value'])
-        results.append({'result': {'tag': {'classes': classes, 'probs': probs}}})
-        tag_pool = []
-        for result in results:
-            result = result["result"]["tag"]
-            tag_pool.extend(result["classes"])
-        users_omega['naimmiah08'] = results #needs to be changed for username
-        getTags = db.tags_pool.find()
-        for tags in getTags:
-            print tags['tags']
-            tag_pool.extend(tags['tags'])
-        tag_pool = set(tag_pool)
-        db.tags_pool.update({'id': 1}, { '$set' : {'tags': list(tag_pool)}})
-        for user in users_omega:
-            data = api.getData(user)
-            follows = data["follows"]["count"]
-            followed_by = data["followed_by"]["count"]
-            bio = data["biography"]
-            media = api.getPictures(user)
-            # media = data["media"]["nodes"]
-            results = users_omega[user]
-            i = 0
-            for result in results:
-                features = []
-                result = result["result"]["tag"]
-                item = media[i]
-                likes.append(item["likes"]["count"])
-                #caption = item["caption"]
-                classes = result["classes"]
-                probs = result["probs"]
-                for tag in tag_pool:
-                    if tag in classes:
-                        features.append(1)
-                        idx = classes.index(tag)
-                        features.append(probs[idx])
-                    else:
-                        features.append(0)
-                        features.append(0)
-                features.append(follows)
-                features.append(followed_by)
-                following.append(follows)
-                followers.append(followed_by)
-                i = i + 1
-                images.append(features)
-        print images
-        print likes
-        return redirect(url_for('uploaded_file',
-                                filename=filename))
-    return "Fuck you"
+	# Get the name of the uploaded file
+	file = request.files['file']
+	username = request.form['username']
+	data = api.getData(username)
+	follows = data["follows"]["count"]
+	followers = data["followed_by"]["count"]
+	# Check if the file is one of the allowed types/extensions
+	if file and allowed_file(file.filename):
+		# Make the filename safe, remove unsupported chars
+		filename = secure_filename(file.filename)
+		# Move the file form the temporal folder to
+		# the upload folder we setup
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		# Redirect the user to the uploaded_file route, which
+		# will basicaly show on the browser the uploaded file
+		image = ClImage(file_obj=open('uploads/' + filename, 'rb'))
+		results = []
+		classes = []
+		probs = []
+		imageinfo = model.predict([image])
+		for i in imageinfo['outputs'][0]['data']['concepts']:
+			classes.append(i['name'])
+			probs.append(i['value'])
+		# results.append({'result': {'tag': {'classes': classes, 'probs': probs}}})
+		tag_pool = []
+		# for result in results:
+			# result = result["result"]["tag"]
+			# tag_pool.extend(result["classes"])
+		# users_omega['naimmiah08'] = results #needs to be changed for username
+		getTags = db.tags_pool.find()
+		for tags in getTags:
+			# print tags['tags']
+			tag_pool.extend(tags['tags'])
+		tag_pool = set(tag_pool)
+		# db.tags_pool.update({'id': 1}, { '$set' : {'tags': list(tag_pool)}})
+		image = []
+		for tag in tag_pool:
+			if tag in classes:
+				image.append(1)
+				idx = classes.index(tag)
+				image.append(probs[idx])
+			else:
+				image.append(0)
+				image.append(0)
+		# print follows, followers
+		image.append(follows >= follows_median)
+		image.append(followers >= followers_median)
+		likes = linearClassifier.predict(image)
+		# print len(image)
+		# print likes
+		# for user in users_omega:
+			# data = api.getData(user)
+			# follows = data["follows"]["count"]
+			# followed_by = data["followed_by"]["count"]
+			# bio = data["biography"]
+			# media = api.getPictures(user)
+			# media = data["media"]["nodes"]
+			# results = users_omega[user]
+			# i = 0
+			# for result in results:
+				# features = []
+				# result = result["result"]["tag"]
+				# item = media[i]
+				# likes.append(item["likes"]["count"])
+				# caption = item["caption"]
+				# classes = result["classes"]
+				# probs = result["probs"]
+				# for tag in tag_pool:
+					# if tag in classes:
+						# features.append(1)
+						# idx = classes.index(tag)
+						# features.append(probs[idx])
+					# else:
+						# features.append(0)
+						# features.append(0)
+				# features.append(follows)
+				# features.append(followed_by)
+				# following.append(follows)
+				# followers.append(followed_by)
+				# i = i + 1
+				# images.append(features)
+		# images = dataset[0]
+		# likes = dataset[1]
+		# print images
+		# print likes
+		return render_template("result.html", image=filename, username=username, likes=ceil(likes[0]))
+	return "jam ciemny jest wschrod"
 
 # This route is expecting a parameter containing the name
 # of a file. Then it will locate that file on the upload
@@ -140,8 +168,8 @@ def upload():
 # an image, that image is going to be show after the upload
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
+	return send_from_directory(app.config['UPLOAD_FOLDER'],
+							   filename)
 
 
 

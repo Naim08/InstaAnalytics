@@ -199,7 +199,7 @@
 						</button>
 					</li>
 					<li class="list__item list__item--burst color-11">
-						<h3 class="list__text">INSTA</h3>
+						<h3 class="list__text">Analytics</h3>
 						<button class="control__button control__button--play" aria-label="Trigger animation">
 							<svg class="control__vector" aria-hidden="true" role="img" viewBox="0 0 24 24">
 								<use xlink:href="#icon-play"></use>
@@ -218,10 +218,10 @@
         </section>
        <ol class="breadcrumb">
                         <li class="active">
-                            <strong>Upload Image</strong>
+                            Upload Image
                         </li>
                         <li>
-                            Image Analytics
+                           <strong> Image Analytics</strong>
                         </li>
                     </ol>
     </div>
@@ -232,32 +232,37 @@
                     <div class="jumbotron">
                             <div class="row">
                        
-<div class="col-md-12">
+                        <div class="col-md-6">
                   
-                         <form id="upload" class="text-center" method="post" action="upload" enctype="multipart/form-data" novalidate>
-                           <h1>Type Instagram Username</h1>
-                           
-                           <div class="form-group">
-                            <input type="text" placeholder="Instagram Username" class="form-control" name="username" id="username">
+                        <img src="/uploads/{{image}}">
                         </div>
-                            
-                            <div id="drop">
-                                
-<h1>Image Upload</h1>
-                                <a class="ladda-button ladda-button-demo btn btn-primary btn-lg" role="button" data-style="zoom-in"><span class="ladda-label">Browse</span><span class="ladda-spinner"></span></a>
-                                
-                            <center style="padding: 10 0">
-                            </center>
-                           
-                            <input id="id_docfile" name="file" type="file" required>
-                             <p><input id="uploadfile" type="submit" value="value"/></p>
-                            </div>
-
-                            <ul>
-                                <!-- The file uploads will be shown here -->
-                            </ul>
-                       
-                        </form>
+                        <div class="col-md-2">
+                                </div>
+                         <div class="col-md-4">
+                             <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <span class="label label-success pull-right">Recent Picture</span>
+                            <h5>Projected Likes</h5>
+                        </div>
+                        <div class="ibox-content">
+                           <br>
+                            <br>
+                            <br>
+                             <br>
+                            <br>
+                            <br>
+                            <h1 class="no-margins">{{likes}}</h1>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <small>Total views</small>
+                        </div>
+                    </div>
+                        
                         </div>
                         </div>
                     </div>

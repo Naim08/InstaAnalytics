@@ -284,7 +284,7 @@
 				});
 			}
 
-			playCtrl.addEventListener('click', function() {
+			(function() { playCtrl.addEventListener('click', function() {
 				if( word.getAttribute('data-state') === 'play' ) {
 					return false;
 				}
@@ -337,7 +337,7 @@
 					instance.hideInstantly();
 					instance.show({callback: endPlayCallback});
 				}
-			});
+			});})();
 		});
 	}
 

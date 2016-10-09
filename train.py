@@ -16,27 +16,27 @@ db = client.instagram
 users = [
 	"naimmiah08",
     "ohmytousif",
-#	"syedfordeys", 
-#	"zabibee",  
-#	"birdpanda",  
-#	"clitoristal",  
-#	"sub.a",  
-	# "tif.lon",  
-	# "bethybogart",  
-	# "mfazalul",  
-	# "syedmuhtasim",  
-	# "micaluvv",  
-	# "saxtothemax",  
-	# "beenoohh",  
-	# "sneaky_potato",  
-	# "moesaucesome",  
-	# "isha.mehra",  
-	# "kris_mc_",  
-	# "fatalraven", 
-	# "themacintosh1", 
-	# "mulla.man",  
-	# "lilmissshine124",  
-	# "the_manamina",  
+	"syedfordeys", 
+	"zabibee",  
+	"birdpanda",  
+	"clitoristal",  
+	"sub.a",  
+	"tif.lon",  
+	"bethybogart",  
+	"mfazalul",  
+	"syedmuhtasim",  
+	"micaluvv",  
+	"saxtothemax",  
+	"beenoohh",  
+	"sneaky_potato",  
+	"moesaucesome",  
+	"isha.mehra",  
+	"kris_mc_",  
+	"fatalraven", 
+	"themacintosh1", 
+	"mulla.man",  
+	"lilmissshine124",  
+	"the_manamina",  
 	# "emptyconvos",  
 	# "throwrw male",  
 	# "a.rah_man",  
@@ -132,7 +132,7 @@ for image in images:
 	image[follows_idx] = image[follows_idx] >= follows_idx
 	image[followers_idx] = image[followers_idx] >= followers_median
 
-print images
+print len(images[0])
 with open('savedDataSet', 'wb') as f:
-    dataset = [images, likes]
-    pickle.dump(dataset, f)
+	dataset = [images, likes, follows_median, followers_median]
+	pickle.dump(dataset, f)

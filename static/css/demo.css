@@ -250,7 +250,7 @@ a:focus {
 	-ms-flex-align: center;
 	align-items: center;
 	max-width: calc(100vw - 40px);
-	height: calc(100vh - 40px);
+	height: 220px;
 	min-height: 460px;
 	margin: 20px;
 	padding: 100px 0;
@@ -367,7 +367,7 @@ a:focus {
 }
 
 .color-11 {
-	background: #23222a;
+	background: white;
 }
 
 .color-12 {
